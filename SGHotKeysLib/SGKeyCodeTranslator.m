@@ -15,7 +15,7 @@
 
 + (id)currentTranslator {
   static SGKeyCodeTranslator *currentTranslator = nil;
-  TISInputSourceRef currentKeyboardLayout = TISCopyCurrentKeyboardInputSource();
+  TISInputSourceRef currentKeyboardLayout = TISCopyCurrentKeyboardLayoutInputSource();
   
   if (currentTranslator == nil) {
     currentTranslator = [[SGKeyCodeTranslator alloc] initWithKeyboardLayout:currentKeyboardLayout];
@@ -31,8 +31,11 @@
   if ((self = [super init]) != nil) {
     keyboardLayout = theLayout;
     CFDataRef uchr = TISGetInputSourceProperty(keyboardLayout, kTISPropertyUnicodeKeyLayoutData);
-    keyboardLayoutData = (const UCKeyboardLayout *)CFDataGetBytePtr(uchr);
-  }  
+    if (!uchr) {
+    } else {
+      keyboardLayoutData = (const UCKeyboardLayout *)CFDataGetBytePtr(uchr);
+    }
+  }
   
   return self;
 }
